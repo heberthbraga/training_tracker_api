@@ -1,0 +1,4 @@
+en:
+  errors:
+    codes:
+      blank: 'Cannot be blank'
