@@ -3,8 +3,6 @@ class User < ApplicationRecord
 
   rolify
   has_secure_password
-
-  after_create :assign_default_role
   
   has_many :identities, dependent: :destroy
   has_many :training_sessions, class_name: 'TrainingSession', foreign_key: 'owner_id', dependent: :destroy
@@ -34,11 +32,5 @@ class User < ApplicationRecord
 
   def authorized? record
     self.registered? && self === record
-  end
-
-private
-
-  def assign_default_role
-    self.add_role(:newuser) if self.roles.blank?
   end
 end

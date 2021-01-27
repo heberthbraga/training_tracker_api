@@ -16,6 +16,7 @@ FactoryBot.define do
     end
 
     factory :newuser do
+      after(:create) {|user| user.add_role(:newuser)}
     end
 
     factory :registered do

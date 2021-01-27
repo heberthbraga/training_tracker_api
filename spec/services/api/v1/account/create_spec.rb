@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Api::V1::Account::Create, type: :service do
   subject(:account_create_command) { described_class.call(account_params) }
 
-  describe 'email account' do
+  describe 'create email account' do
     context 'when there are user validation errors' do
       let(:account_params) { 
         {
@@ -95,6 +95,49 @@ describe Api::V1::Account::Create, type: :service do
 
         expect(user_attributes[:first_name]).to eq 'Foo'
         expect(user_attributes[:last_name]).to eq 'Bar'
+      end
+    end
+
+    context 'when identity already exists' do
+      let(:account_params) { 
+        {
+          first_name: 'Foo',
+          last_name: 'Bar',
+          gender: 'male',
+          birthdate: '2021/01/21',
+          height: {
+            value: 175,
+            symbol: 'cm'
+          },
+          weight: {
+            value: 75,
+            symbol: 'kg'
+          },
+          identity: {
+            provider: 'email',
+            email: 'foo@example.com',
+            password: 'test12345'
+          }
+        }  
+      }
+
+      before do
+        create(:kilogram)
+        create(:centimeter)
+
+        user = create(:user, first_name: account_params[:first_name], last_name: account_params[:last_name], gender: account_params[:gender], birthdate: account_params[:birthdate] )
+        create(:identity, provider: account_params[:identity][:provider], uuid: account_params[:identity][:email], access_token: nil, user: user)
+      end
+
+      it 'fails' do
+        response = account_create_command.result
+
+        expect(response).not_to be_nil
+
+        errors = response[:errors]
+        expect(errors).not_to be_empty
+        expect(errors.first[:status]).to eq 404
+        expect(errors.first[:detail]).to eq Errors::Messages::IDENTITY_EXISTS_ERROR_MESSAGE
       end
     end
   end

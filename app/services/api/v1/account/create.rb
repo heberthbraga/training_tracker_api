@@ -26,18 +26,19 @@ class Api::V1::Account::Create
     if provider === 'email'
       user.email = identity[:email]
       user.password = identity[:password]
+      uuid = identity[:email]
     else
       # other sign up methods
     end
 
+    identity = Identity.find_by(provider: provider, uuid: uuid, access_token: access_token)
+
+    return ErrorSerializer.new(Service::Errors::IdentityExists.new).to_h if identity.present?
+
     if user.save
-      identity = Identity.find_by(provider: provider, user: user)
-      
-      if identity.present?
-        return ErrorSerializer.new(Service::Errors::IdentityExists.new)
-      else
-        Identity.create(provider: provider, user: user, uuid:uuid, access_token: access_token)
-      end
+      user.add_role(:registered)
+
+      Identity.create(provider: provider, user: user, uuid: uuid, access_token: access_token)
 
       return UserSerializer.new(user)
     else
