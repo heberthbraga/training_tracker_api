@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class WorkoutExerciseSerializer
   include JSONAPI::Serializer
 
@@ -7,7 +9,7 @@ class WorkoutExerciseSerializer
     object.workout.activity.name
   end
 
-  attribute :exercise_name do |object| 
+  attribute :exercise_name do |object|
     object.exercise.name
   end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ErrorSerializer
   def initialize(error)
     @error = error
@@ -7,7 +9,7 @@ class ErrorSerializer
     serializable_hash
   end
 
-  def to_json(payload)
+  def to_json(_payload)
     to_h.to_json
   end
 

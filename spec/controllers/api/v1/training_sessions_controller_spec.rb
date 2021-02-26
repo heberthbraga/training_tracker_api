@@ -14,7 +14,7 @@ describe Api::V1::TrainingSessionsController, type: :request do
             name: name,
             deadline: deadline
           }
-        }
+        }, headers: @headers
   
         response = json_response
   
@@ -38,7 +38,7 @@ describe Api::V1::TrainingSessionsController, type: :request do
             name: nil,
             deadline: nil
           }
-        }
+        }, headers: @headers
   
         response = json_response
   
@@ -64,7 +64,7 @@ describe Api::V1::TrainingSessionsController, type: :request do
       it 'returns success' do
         @training_session = create(:training_session, owner: @user)
 
-        get api_v1_training_session_url(@training_session.id)
+        get api_v1_training_session_url(@training_session.id), headers: @headers
 
         response = json_response
   
@@ -82,7 +82,7 @@ describe Api::V1::TrainingSessionsController, type: :request do
       end
 
       it 'fails' do
-        get api_v1_training_session_url(1000)
+        get api_v1_training_session_url(1000), headers: @headers
 
         response = json_response
   
@@ -105,7 +105,7 @@ describe Api::V1::TrainingSessionsController, type: :request do
           training_session: {
             name: 'test'
           }
-        }
+        }, headers: @headers
   
         response = json_response
   
@@ -129,7 +129,7 @@ describe Api::V1::TrainingSessionsController, type: :request do
           training_session: {
             name: ''
           }
-        }
+        }, headers: @headers
   
         response = json_response
   
@@ -154,7 +154,7 @@ describe Api::V1::TrainingSessionsController, type: :request do
         @training_session = create(:training_session, owner: @user)
         current_id = @training_session.id
 
-        delete api_v1_training_session_url(current_id)
+        delete api_v1_training_session_url(current_id), headers: @headers
 
         response = json_response
   
@@ -180,7 +180,7 @@ describe Api::V1::TrainingSessionsController, type: :request do
       end
 
       it 'returns a list of activities' do
-        get activities_api_v1_training_session_url(@training_session.id)
+        get activities_api_v1_training_session_url(@training_session.id), headers: @headers
 
         response = json_response
   

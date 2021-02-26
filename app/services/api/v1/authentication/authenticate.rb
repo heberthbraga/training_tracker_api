@@ -1,34 +1,35 @@
-class Api::V1::Authentication::Authenticate
-  prepend SimpleCommand
+# frozen_string_literal: true
 
-  def initialize authenticate_method
-    @authenticate_method = authenticate_method
-  end
+module Api
+  module V1
+    module Authentication
+      class Authenticate
+        prepend SimpleCommand
 
-  def call
-    authentication = authenticate_method
-    
-    if authentication.success?
-      info = authentication.result
-      user = info[:user]
+        def initialize(authenticate_method)
+          @authenticate_method = authenticate_method
+        end
 
-      Rails.logger.debug "Authenticating user #{user.id}"
+        def call
+          authentication = authenticate_method
 
-      jwt_encoded_command = Api::V1::Jwt::Encode.call({ provider: info[:type], user_id: user.id }, 4.hours.from_now)
+          if authentication.success?
+            info = authentication.result
+            user = info[:user]
+            provider = info[:type]
+            uuid = info[:uuid]
 
-      user_info = Hash.new
-      user_info[:token] = jwt_encoded_command.result
-      user_info[:user_id] = user.id
-      user_info[:first_name] = user.first_name
-      user_info[:last_name] = user.last_name
+            Rails.logger.debug "Authenticating user #{user.id}"
+            Rails.logger.debug "With provider: #{provider} and uuid: #{uuid}"
 
-      return user_info
-    else
-      nil
+            Api::V1::Token::IssuerAccess.call({ user: user, provider: provider, uuid: uuid }).result
+          end
+        end
+
+        private
+
+        attr_reader :authenticate_method
+      end
     end
   end
-
-private
-
-  attr_reader :authenticate_method
 end

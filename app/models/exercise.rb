@@ -1,6 +1,7 @@
-class Exercise < ApplicationRecord
+# frozen_string_literal: true
 
+class Exercise < ApplicationRecord
   has_many :workout_exercises
 
-  validates_presence_of :name
+  validates :name, presence: true
 end

@@ -1,17 +1,18 @@
-class ValidationErrorsSerializer
+# frozen_string_literal: true
 
+class ValidationErrorsSerializer
   def initialize(record)
     @record = record
   end
 
   def serialize
     {
-      message: "Validation Failed",
+      message: 'Validation Failed',
       errors: errors
     }
   end
 
-private
+  private
 
   attr_reader :record
 

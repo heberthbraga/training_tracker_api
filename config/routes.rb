@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
   apipie
 
-  root to: "apipie/apipies#index"
-  
-  namespace :api do 
+  root to: 'apipie/apipies#index'
+
+  namespace :api do
     namespace :v1 do
       resources :users do
         collection do
@@ -13,7 +15,6 @@ Rails.application.routes.draw do
 
       resources :sessions do
         collection do
-          delete 'invalidate'
           post 'email'
         end
       end
@@ -25,13 +26,13 @@ Rails.application.routes.draw do
         resources :activities, only: [:create]
       end
 
-      resources :activities, only: [:index, :show, :update, :destroy] do
+      resources :activities, only: %i[index show update destroy] do
         put 'finish', on: :member
 
         resources :workout_exercises, only: [:create]
       end
 
-      resources :workout_exercises, only: [:show, :update, :destroy]
+      resources :workout_exercises, only: %i[show update destroy]
 
       resources :muscle_groups
 

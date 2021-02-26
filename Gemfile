@@ -44,6 +44,7 @@ group :test do
   gem 'database_cleaner'
   gem 'simplecov', require: false
   gem 'timecop'
+  gem 'fakeredis'
 end
 
 group :development do
@@ -54,8 +55,14 @@ group :development do
   gem 'solargraph'
   gem 'ngrok-tunnel'
   gem 'tty-box'
+  gem 'rubocop'
+  gem 'rubocop-performance'
+  gem 'rubocop-rails'
+  gem 'rubocop-rspec'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'apipie-rails'
+
+gem 'redis'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Activity < ApplicationRecord
   extend Enumerize
 
@@ -7,11 +9,11 @@ class Activity < ApplicationRecord
   accepts_nested_attributes_for :timer
 
   enumerize :activity_type, in: [:workout]
-  
+
   has_many :workouts, -> { order(position: :asc) }, dependent: :destroy
 
-  validates_presence_of :training_session
-  validates_presence_of :activity_type
-  validates_presence_of :name
-  validates_presence_of :phases
+  validates :training_session, presence: true
+  validates :activity_type, presence: true
+  validates :name, presence: true
+  validates :phases, presence: true
 end

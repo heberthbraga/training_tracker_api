@@ -1,61 +1,67 @@
-class Api::V1::MuscleGroupsController < ApplicationController
-  before_action :set_muscle_group, only: [:show, :update, :destroy]
+# frozen_string_literal: true
 
-  api :GET, '/api/v1/muscle_groups', 'List all muscle groups'
-  def index
-    muscle_groups = policy_scope(MuscleGroup)
+module Api
+  module V1
+    class MuscleGroupsController < ApplicationController
+      before_action :set_muscle_group, only: %i[show update destroy]
 
-    render_response muscle_groups
-  end
+      api :GET, '/api/v1/muscle_groups', 'List all muscle groups'
+      def index
+        muscle_groups = policy_scope(MuscleGroup)
 
-  api :POST, '/api/v1/muscle_groups', 'Creates a new muscle group'
-  param :muscle_group, Hash, desc: 'Muscle group information', required: true do
-    param :name, String, desc: 'Name of the muscle', required: true
-  end
-  def create
-    muscle_group = policy_scope(MuscleGroup).new(muscle_group_params)
+        render_response muscle_groups
+      end
 
-    muscle_group.save!
+      api :POST, '/api/v1/muscle_groups', 'Creates a new muscle group'
+      param :muscle_group, Hash, desc: 'Muscle group information', required: true do
+        param :name, String, desc: 'Name of the muscle', required: true
+      end
+      def create
+        muscle_group = policy_scope(MuscleGroup).new(muscle_group_params)
 
-    render_response muscle_group
-  end
+        muscle_group.save!
 
-  api :GET, '/api/v1/muscle_groups/:id', 'Show details of a muscle group'
-  param :id, Integer, desc: 'id of the requested muscle group', required: true
-  def show
-    render_response @muscle_group
-  end
+        render_response muscle_group
+      end
 
-  api :PUT, '/api/v1/muscle_groups/:id', 'Updates an existing muscle group'
-  param :id, Integer, desc: 'id of the requested muscle group', required: true
-  param :muscle_group, Hash, desc: 'Muscle group information', required: true do
-    param :name, String, desc: 'Name of the muscle', required: true
-  end
-  def update
-    @muscle_group.update!(muscle_group_params)
+      api :GET, '/api/v1/muscle_groups/:id', 'Show details of a muscle group'
+      param :id, Integer, desc: 'id of the requested muscle group', required: true
+      def show
+        render_response @muscle_group
+      end
 
-    render_response @muscle_group
-  end
+      api :PUT, '/api/v1/muscle_groups/:id', 'Updates an existing muscle group'
+      param :id, Integer, desc: 'id of the requested muscle group', required: true
+      param :muscle_group, Hash, desc: 'Muscle group information', required: true do
+        param :name, String, desc: 'Name of the muscle', required: true
+      end
+      def update
+        @muscle_group.update!(muscle_group_params)
 
-  api :DELETE, '/api/v1/muscle_groups/:id', 'Destroy an existing muscle group'
-  param :id, Integer, desc: 'id of the muscle group', required: true
-  def destroy
-    @muscle_group.destroy!
+        render_response @muscle_group
+      end
 
-    render_response @muscle_group
-  end
+      api :DELETE, '/api/v1/muscle_groups/:id', 'Destroy an existing muscle group'
+      param :id, Integer, desc: 'id of the muscle group', required: true
+      def destroy
+        @muscle_group.destroy!
 
-private
+        render_response @muscle_group
+      end
 
-  def set_muscle_group
-    @muscle_group = policy_scope(MuscleGroup).find(params[:id])
-  end
+      private
 
-  def render_response entity
-    render json: MuscleGroupSerializer.new(entity)
-  end
+      def set_muscle_group
+        @muscle_group = policy_scope(MuscleGroup).find(params[:id])
+      end
 
-  def muscle_group_params
-    params.require(:muscle_group).permit(:name)
+      def render_response(entity)
+        render json: MuscleGroupSerializer.new(entity)
+      end
+
+      def muscle_group_params
+        params.require(:muscle_group).permit(:name)
+      end
+    end
   end
 end

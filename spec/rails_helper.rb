@@ -72,6 +72,10 @@ RSpec.configure do |config|
 
   config.include RequestSpecHelper, type: :request
 
+  config.before do
+    Redis::Connection::Memory.reset_all_databases
+  end
+
   config.before(:suite) do
     DatabaseCleaner.clean_with(:truncation)
   end

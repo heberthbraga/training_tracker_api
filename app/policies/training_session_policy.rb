@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TrainingSessionPolicy < ApplicationPolicy
   def show?
     owner?
@@ -15,7 +17,7 @@ class TrainingSessionPolicy < ApplicationPolicy
     owner?
   end
 
-private
+  private
 
   def training_session
     record

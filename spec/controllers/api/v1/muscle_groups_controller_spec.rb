@@ -7,7 +7,7 @@ describe Api::V1::MuscleGroupsController, type: :request do
     it 'returns a list of muscle groups' do
       create_list(:biceps, 5)
 
-      get api_v1_muscle_groups_url
+      get api_v1_muscle_groups_url, headers: @headers
 
       response = json_response
   
@@ -24,7 +24,7 @@ describe Api::V1::MuscleGroupsController, type: :request do
     it 'returns an existing muscle group' do
       biceps = create(:biceps)
 
-      get api_v1_muscle_group_url(biceps.id)
+      get api_v1_muscle_group_url(biceps.id), headers: @headers
 
       response = json_response
     
@@ -49,7 +49,7 @@ describe Api::V1::MuscleGroupsController, type: :request do
         muscle_group: {
           name: name
         }
-      }
+      }, headers: @headers
 
       response = json_response
     
@@ -77,7 +77,7 @@ describe Api::V1::MuscleGroupsController, type: :request do
         muscle_group: {
           name: name
         }
-      }
+      }, headers: @headers
 
       response = json_response
     
@@ -103,7 +103,7 @@ describe Api::V1::MuscleGroupsController, type: :request do
       biceps = create(:biceps)
       current_id = biceps.id
 
-      delete api_v1_muscle_group_url(current_id)
+      delete api_v1_muscle_group_url(current_id), headers: @headers
 
       response = json_response
     

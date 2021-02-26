@@ -1,39 +1,40 @@
-class Api::V1::Authentication::Authorize
-  prepend SimpleCommand
+# frozen_string_literal: true
 
-  def initialize token
-    @token = token
-  end
+module Api
+  module V1
+    module Authentication
+      class Authorize
+        prepend SimpleCommand
 
-  def call
-    user
-  end
+        def initialize(headers)
+          @token = headers['Authorization']&.split('Bearer ')&.last
+        end
 
-private
-  attr_reader :token
+        def call
+          user
+        end
 
-  def user
-    decoded_token = decode
-    
-    if decoded_token
-      provider = decoded_token[:provider]
-      uuid = decoded_token[:uuid]
-      user_id = decoded_token[:user_id]
+        private
 
-      identity = Identity.where(provider: decoded_token[:provider], uuid: decoded_token[:uuid], user_id: decoded_token[:user_id]).first
-      @user ||= identity.user if identity
-      @user || errors.add(:invalid_credentials, 'Wrong Credentials.') && nil
-    else
-      nil
+        attr_reader :token
+
+        def user
+          decoded_token = decode
+
+          if decoded_token
+            @user = Api::V1::Authentication::Confirm.call(decoded_token).result
+            @user || errors.add(:invalid_credentials, 'Wrong Credentials.') && nil
+          end
+        end
+
+        def decode
+          return Api::V1::Jwt::Decode.call(token).result if token.present?
+
+          errors.add :invalid_token, 'Invalid Token.'
+
+          nil
+        end
+      end
     end
-  end
-
-  def decode
-    if token.present?
-      return Api::V1::Jwt::Decode.call(token).result
-    else
-      errors.add :invalid_token, 'Invalid Token.'
-    end
-    nil
   end
 end

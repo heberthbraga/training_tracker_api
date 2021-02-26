@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ActivityPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
@@ -8,7 +10,7 @@ class ActivityPolicy < ApplicationPolicy
       end
     end
   end
-  
+
   def show?
     owner?
   end
@@ -25,7 +27,7 @@ class ActivityPolicy < ApplicationPolicy
     owner?
   end
 
-private
+  private
 
   def activity
     record

@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 describe Api::V1::Jwt::Decode, type: :service do
-  JWT_SECRET = Rails.application.secrets.secret_key_base
-
   context 'when decoding a given token' do
     let(:payload) { {provider: 'app', user_id: 1} }
+    let(:algorithm) { { algorithm: 'RS256' } }
+    let(:verify) { true }
 
     before do
       @token = Api::V1::Jwt::Encode.call(payload).result
@@ -20,18 +20,9 @@ describe Api::V1::Jwt::Decode, type: :service do
       expect(decoded_payload[:user_id]).to eq payload[:user_id]
     end
 
-    it 'raises an JWT::ExpiredSignature exception' do
-      allow(JWT).to receive(:decode).with(@token, JWT_SECRET).and_raise(JWT::ExpiredSignature.new)
-
-      command = described_class.call @token
-
-      result = command.result
-
-      expect(result).to be false
-    end
-
     it 'raises an JWT::DecodeError exception' do
-      allow(JWT).to receive(:decode).with(@token, JWT_SECRET).and_raise(JWT::DecodeError.new)
+      expect(Security::Token::Support).to receive(:secret_decode).and_return(File.read(Rails.root.join('keys/tracking-api-public.pem'))).twice
+      expect(JWT).to receive(:decode).with(@token, Security::Token::Support.secret_decode, verify, algorithm).and_raise(JWT::DecodeError.new)
 
       command = described_class.call @token
 

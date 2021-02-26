@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class TrainingSessionSerializer
   include JSONAPI::Serializer
-  
+
   set_id :id
 
   attributes :name, :deadline

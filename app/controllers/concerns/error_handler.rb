@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ErrorHandler
   extend ActiveSupport::Concern
 
@@ -13,45 +15,46 @@ module ErrorHandler
     rescue_from Errors::WeightRequired, with: :render_weight_required_error
   end
 
-  def render_unprocessable_entity_response exception
-    render json: ValidationErrorsSerializer.new(exception.record).serialize, status: :unprocessable_entity
+  def render_unprocessable_entity_response(exception)
+    render json: ValidationErrorsSerializer.new(exception.record).serialize,
+           status: :unprocessable_entity
   end
 
-  def render_not_found_response exception
+  def render_not_found_response(_exception)
     render_error Errors::NotFound.new
   end
 
-  def render_pundit_not_authorized exception
+  def render_pundit_not_authorized(_exception)
     render_error Errors::Forbidden.new
   end
 
-  def render_parameter_missing exception
+  def render_parameter_missing(_exception)
     render_error Errors::ParemeterMissing.new
   end
 
-  def render_unauthorized_error exception
+  def render_unauthorized_error(_exception)
     render_error Errors::Unauthorized.new
   end
 
-  def render_identity_not_found_error exception
+  def render_identity_not_found_error(_exception)
     render_error Errors::IdentityNotFound.new
   end
 
-  def render_provider_not_found_error exception
+  def render_provider_not_found_error(_exception)
     render_error Errors::ProviderNotFound.new
   end
 
-  def render_height_required_error exception
+  def render_height_required_error(_exception)
     render_error Errors::HeightRequired.new
   end
 
-  def render_weight_required_error exception
+  def render_weight_required_error(_exception)
     render_error Errors::WeightRequired.new
   end
 
-private
+  private
 
-  def render_error exception
+  def render_error(exception)
     render json: ErrorSerializer.new(exception), status: exception.status
   end
 end

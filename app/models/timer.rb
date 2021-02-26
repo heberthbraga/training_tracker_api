@@ -1,4 +1,5 @@
-class Timer < ApplicationRecord
+# frozen_string_literal: true
 
-  validates_presence_of :duration
+class Timer < ApplicationRecord
+  validates :duration, presence: true
 end

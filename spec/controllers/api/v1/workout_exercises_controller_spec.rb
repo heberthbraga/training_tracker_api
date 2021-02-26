@@ -22,7 +22,7 @@ describe Api::V1::WorkoutExercisesController, type: :request do
               name: biceps.name
             }
           }
-        }
+        }, headers: @headers
 
         response = json_response
     
@@ -57,7 +57,7 @@ describe Api::V1::WorkoutExercisesController, type: :request do
         workout = create(:workout, activity: activity_a)
         workout_exercise = create(:workout_exercise, workout: workout)
 
-        get api_v1_workout_exercise_url(workout_exercise.id)
+        get api_v1_workout_exercise_url(workout_exercise.id), headers: @headers
 
         response = json_response
     
@@ -101,7 +101,7 @@ describe Api::V1::WorkoutExercisesController, type: :request do
             series: series,
             repetitions: repetitions
           }
-        }
+        }, headers: @headers
 
         response = json_response
     
@@ -134,11 +134,10 @@ describe Api::V1::WorkoutExercisesController, type: :request do
         workout_exercise = create(:workout_exercise, workout: workout)
         current_id = workout_exercise.id
 
-        delete api_v1_workout_exercise_url(current_id)
+        delete api_v1_workout_exercise_url(current_id), headers: @headers
 
         response = json_response
-    
-        expect(response).not_to be_nil
+
         data = response[:data]
   
         expect(data).not_to be_nil

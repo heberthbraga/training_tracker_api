@@ -1,5 +1,6 @@
-class ValidationErrorSerializer
+# frozen_string_literal: true
 
+class ValidationErrorSerializer
   def initialize(record, field, details)
     @record = record
     @field = field
@@ -26,7 +27,7 @@ class ValidationErrorSerializer
   end
 
   def field
-     I18n.t(
+    I18n.t(
       @field,
       scope: [:fields, underscored_resource_name],
       locale: :en,
@@ -37,12 +38,12 @@ class ValidationErrorSerializer
   def code
     I18n.t(
       @details[:error],
-      scope: [:errors, :codes],
+      scope: %i[errors codes],
       locale: :en,
       default: @details[:error].to_s
     )
   end
-  
+
   def underscored_resource_name
     @record.class.to_s.gsub('::', '').underscore
   end

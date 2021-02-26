@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Api::V1::Authentication::Email, type: :service do
+describe Api::V1::Authentication::AuthenticateByEmail, type: :service do
   subject(:context) { described_class.call(email, password) }
   
   context 'when user cannot be found' do

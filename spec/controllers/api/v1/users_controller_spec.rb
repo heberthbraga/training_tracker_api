@@ -21,7 +21,7 @@ describe Api::V1::UsersController, type: :request do
     include_context 'authenticate'
 
     it 'returns the user details' do
-      get details_api_v1_users_url
+      get details_api_v1_users_url, headers: @headers
 
       response = json_response
 
@@ -42,7 +42,7 @@ describe Api::V1::UsersController, type: :request do
     it 'returns the user details including training sessions' do
       training_session = create(:training_session, owner: @user)
 
-      get details_api_v1_users_url
+      get details_api_v1_users_url, headers: @headers
 
       response = json_response
 

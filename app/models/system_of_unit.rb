@@ -1,4 +1,6 @@
+# frozen_string_literal: true
+
 class SystemOfUnit < ApplicationRecord
-  validates_presence_of :description
-  validates_presence_of :symbol
+  validates :description, presence: true
+  validates :symbol, presence: true
 end

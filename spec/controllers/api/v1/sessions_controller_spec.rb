@@ -1,30 +1,6 @@
 require 'rails_helper'
 
 describe Api::V1::SessionsController, type: :request do
-  context 'when invalidating an existing session' do
-    before(:each) do
-      user = create(:registered)
-      create(:identity, provider: 'email', user: user)
-      
-      post '/api/v1/sessions/email', params: { email: user.email, password: user.password }
-
-      response = json_response
-
-      expect(response).not_to be_nil
-      expect(response[:user_id]).to eq user.id
-    end
-
-    it 'succeeds' do
-      delete '/api/v1/sessions/invalidate'
-
-      response = json_response
-
-      expect(response).not_to be_nil
-      expect(response[:status]).to eq 'ok'
-      expect(response[:code]).to eq 200
-    end
-  end
-  
   context 'when creating authentication by email/password' do
     before(:each) do
       @user = create(:registered)
@@ -35,8 +11,8 @@ describe Api::V1::SessionsController, type: :request do
 
       response = json_response
 
-      expect(response).not_to be_nil
-      expect(response[:user_id]).to eq @user.id
+      expect(response[:access_token]).not_to be_nil
+      expect(response[:refresh_token]).not_to be_nil
     end
 
     it 'fails when email and password not provided' do

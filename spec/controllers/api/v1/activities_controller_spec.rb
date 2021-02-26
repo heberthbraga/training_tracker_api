@@ -11,7 +11,7 @@ describe Api::V1::ActivitiesController, type: :request do
       end
 
       it 'returns a list of activities' do
-        get api_v1_activities_url
+        get api_v1_activities_url, headers: @headers
 
         response = json_response
   
@@ -28,7 +28,7 @@ describe Api::V1::ActivitiesController, type: :request do
       include_context 'authenticate'
 
       it 'returns a list of activities fail' do
-        get api_v1_activities_url
+        get api_v1_activities_url, headers: @headers
 
         response = json_response
   
@@ -66,7 +66,7 @@ describe Api::V1::ActivitiesController, type: :request do
                 duration: duration
               }
             }
-          }
+          }, headers: @headers
     
           response = json_response
     
@@ -98,7 +98,7 @@ describe Api::V1::ActivitiesController, type: :request do
                 duration: nil
               }
             }
-          }
+          }, headers: @headers
     
           response = json_response
     
@@ -129,7 +129,7 @@ describe Api::V1::ActivitiesController, type: :request do
         it 'returns success' do
           activity_a = create(:activity_a, training_session: training_session)
   
-          get api_v1_activity_url(activity_a.id)
+          get api_v1_activity_url(activity_a.id), headers: @headers
   
           response = json_response
     
@@ -152,7 +152,7 @@ describe Api::V1::ActivitiesController, type: :request do
         end
   
         it 'fails' do
-          get api_v1_activity_url(1000)
+          get api_v1_activity_url(1000), headers: @headers
   
           response = json_response
     
@@ -181,7 +181,7 @@ describe Api::V1::ActivitiesController, type: :request do
                 duration: duration
               }
             }
-          }
+          }, headers: @headers
     
           response = json_response
     
@@ -209,7 +209,7 @@ describe Api::V1::ActivitiesController, type: :request do
             activity: {
               name: ''
             }
-          }
+          }, headers: @headers
     
           response = json_response
     
@@ -234,7 +234,7 @@ describe Api::V1::ActivitiesController, type: :request do
           activity_a = create(:activity_a, training_session: training_session)
           current_id = activity_a.id
   
-          delete api_v1_activity_url(current_id)
+          delete api_v1_activity_url(current_id), headers: @headers
   
           response = json_response
     
@@ -260,7 +260,7 @@ describe Api::V1::ActivitiesController, type: :request do
 
           put finish_api_v1_activity_url(current_id), params: {
             complete: true
-          }
+          }, headers: @headers
 
           response = json_response
 

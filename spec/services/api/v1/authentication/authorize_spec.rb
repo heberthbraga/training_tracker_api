@@ -1,10 +1,14 @@
 require 'rails_helper'
 
 describe Api::V1::Authentication::Authorize, type: :service do
-  subject(:context) { described_class.call(token) }
+  subject(:context) { described_class.call(headers) }
 
   context 'when token is not present' do
-    let(:token) { nil }
+    let(:headers) { 
+      {
+        'Authorization' => 'Bearer '
+      } 
+    }
 
     it 'fails' do      
       expect(context).to be_failure
@@ -22,7 +26,12 @@ describe Api::V1::Authentication::Authorize, type: :service do
   context 'when token is present with wrong credentials' do
     let!(:user) { create(:registered) }
     let!(:identity) { create(:identity, provider: 'app', uuid: nil, user: user) }
-    let!(:token) { Api::V1::Jwt::Encode.call({provider: 'app', user_id: 10} ).result }
+    let!(:token) { Api::V1::Jwt::Encode.call({provider: 'app', uuid: nil, sub: 10} ).result }
+    let(:headers) { 
+      {
+        'Authorization' => "Bearer #{token}"
+      } 
+    }
 
     it 'fails' do
       expect(context).to be_failure
@@ -40,7 +49,12 @@ describe Api::V1::Authentication::Authorize, type: :service do
   context 'when token is present with correct credentials' do
     let!(:user) { create(:registered) }
     let!(:identity) { create(:identity, provider: 'app', user: user) }
-    let!(:token) { Api::V1::Jwt::Encode.call({provider: 'app', user_id: user.id} ).result }
+    let!(:token) { Api::V1::Jwt::Encode.call({provider: 'app', uuid: nil, sub: user.id} ).result }
+    let(:headers) { 
+      {
+        'Authorization' => "Bearer #{token}"
+      } 
+    }
 
     it 'succeeds' do
       expect(context).to be_success

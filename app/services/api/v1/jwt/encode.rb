@@ -1,19 +1,25 @@
-class Api::V1::Jwt::Encode
-  prepend SimpleCommand
+# frozen_string_literal: true
 
-  JWT_SECRET = Rails.application.secrets.secret_key_base
+module Api
+  module V1
+    module Jwt
+      class Encode
+        prepend SimpleCommand
 
-  def initialize payload, exp = 24.hours.from_now
-    @payload = payload
-    @exp = exp
+        def initialize(payload)
+          @payload = payload
+        end
+
+        def call
+          JWT.encode(payload, Security::Token::Support.secret_encode, 'RS256')
+        end
+
+        private
+
+        attr_reader :payload
+
+        def secret; end
+      end
+    end
   end
-
-  def call
-    payload[:exp] = exp.to_i
-    JWT.encode(payload, JWT_SECRET)
-  end
-
-private
-
-  attr_reader :payload, :exp
 end

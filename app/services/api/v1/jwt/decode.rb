@@ -1,28 +1,29 @@
-class Api::V1::Jwt::Decode
-  prepend SimpleCommand
+# frozen_string_literal: true
 
-  JWT_SECRET = Rails.application.secrets.secret_key_base
+module Api
+  module V1
+    module Jwt
+      class Decode
+        prepend SimpleCommand
 
-  def initialize token
-    @token = token
-  end
+        def initialize(token, verify: true)
+          @token = token
+          @verify = verify
+        end
 
-  def call
-    begin
-      body = JWT.decode(token, JWT_SECRET)
-      
-      if body then HashWithIndifferentAccess.new body[0] else return false end
+        def call
+          body = JWT.decode(token, Security::Token::Support.secret_decode, verify, { algorithm: 'RS256' })
 
-      rescue JWT::ExpiredSignature, JWT::VerificationError => e
-        Rails.logger.error "=====> Api::V1::Jwt::Decode.error = #{e.inspect}"
-        return false
-      rescue JWT::DecodeError, JWT::VerificationError => e
-        Rails.logger.error "=====> Api::V1::Jwt::Decode.error = #{e.inspect}"
-        return false
+          body ? (HashWithIndifferentAccess.new body[0]) : (return false)
+        rescue JWT::DecodeError, JWT::VerificationError => e
+          Rails.logger.error "=====> Api::V1::Jwt::Decode.error = #{e.inspect}"
+          false
+        end
+
+        private
+
+        attr_reader :token, :verify
       end
+    end
   end
-
-private 
-
-  attr_reader :token
 end

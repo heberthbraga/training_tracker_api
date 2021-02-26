@@ -1,5 +1,6 @@
-class WorkoutExercisePolicy < ApplicationPolicy
+# frozen_string_literal: true
 
+class WorkoutExercisePolicy < ApplicationPolicy
   def show?
     owner?
   end
@@ -12,7 +13,7 @@ class WorkoutExercisePolicy < ApplicationPolicy
     owner?
   end
 
-private
+  private
 
   def workout_exercise
     record
